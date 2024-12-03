@@ -1,21 +1,28 @@
 const { createServer } = require("node:http");
+const fs = require("node:fs");
 
 const hostname = "127.0.0.1";
 const port = 3000;
 
-const server = createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.write("Hello world", (err) => {
-    console.log("Write completed, do more writes now.");
-    if (err) {
-      console.log("Error occured :", err);
+const server = createServer((request, response) => {
+  response.statusCode = 200;
+  response.setHeader("Content-Type", "text/plain");
+
+  fs.readFile("server.js", (error, data) => {
+    if (error) {
+      return;
     }
+
+    response.end(data.toString());
   });
-  res.end("This is the end of the response.");
-  // Writing more now is not allowed!
 });
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+// ---------------------------------------------
+/*
+  -  The createServer() method of http creates a new HTTP server and returns it.
+  -  The server is set to listen on the specified port and host name. When the server is ready, the callback function is called, in this case informing us that the server is running.
+*/
